@@ -1,8 +1,7 @@
 using DailyDozen.Shared.Models;
 using Microsoft.UI.Xaml.Input;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Windows.Input;
 
 namespace DailyDozen.Shared.ViewModels
@@ -13,6 +12,7 @@ namespace DailyDozen.Shared.ViewModels
         private readonly MainViewModel _mainViewModel;
         private int _count;
         private int _streak;
+        private string _iconSource;
 
         public int Id => _servings.Id;
         
@@ -38,6 +38,12 @@ namespace DailyDozen.Shared.ViewModels
         {
             get => _streak;
             set => SetProperty(ref _streak, value);
+        }
+
+        public string IconSource
+        {
+            get => _iconSource;
+            set => SetProperty(ref _iconSource, value);
         }
 
         public int RecommendedAmount => Food.RecommendedAmount;
@@ -85,11 +91,22 @@ namespace DailyDozen.Shared.ViewModels
                     {
                         // Try to find previous day's servings
                         var previousDay = new Day(Day.DateTime.AddDays(-1));
-                        var previousDayServings = db.Servings
-                            .FirstOrDefault(s => s.DayId == previousDay.Id && s.FoodId == Food.Id);
-                        
-                        servings.RecalculateStreak(previousDayServings);
-                        _streak = servings.Streak;
+                        var previousDayInDb = db.Days
+                            .FirstOrDefault(d => d.DateString == previousDay.DateString);
+                            
+                        if (previousDayInDb != null)
+                        {
+                            var previousDayServings = db.Servings
+                                .FirstOrDefault(s => s.DayId == previousDayInDb.Id && s.FoodId == Food.Id);
+                            
+                            servings.RecalculateStreak(previousDayServings);
+                            _streak = servings.Streak;
+                        }
+                        else
+                        {
+                            servings.Streak = 1;
+                            _streak = 1;
+                        }
                     }
                     else if (_count < RecommendedAmount)
                     {

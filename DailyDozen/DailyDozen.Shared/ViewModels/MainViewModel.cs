@@ -1,13 +1,12 @@
+using DailyDozen.Shared.Helpers;
 using DailyDozen.Shared.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.UI.Xaml.Input;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Microsoft.UI.Xaml.Input;
 
 namespace DailyDozen.Shared.ViewModels
 {
@@ -164,7 +163,11 @@ namespace DailyDozen.Shared.ViewModels
                     _dbContext.SaveChanges();
                 }
 
-                var servingViewModel = new ServingsViewModel(serving, this);
+                var servingViewModel = new ServingsViewModel(serving, this)
+                {
+                    IconSource = IconHelper.GetIconPath(food.IdName)
+                };
+                
                 FoodServings.Add(servingViewModel);
             }
 
@@ -197,7 +200,11 @@ namespace DailyDozen.Shared.ViewModels
                     _dbContext.SaveChanges();
                 }
 
-                var servingViewModel = new TweakServingsViewModel(serving, this);
+                var servingViewModel = new TweakServingsViewModel(serving, this)
+                {
+                    IconSource = IconHelper.GetIconPath(tweak.IdName, true)
+                };
+                
                 TweakServings.Add(servingViewModel);
             }
 

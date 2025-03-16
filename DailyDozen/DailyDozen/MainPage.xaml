@@ -15,7 +15,7 @@
         <DataTemplate x:Key="FoodServingsTemplate" x:DataType="viewmodels:ServingsViewModel">
             <controls:ServingsControl 
                 Title="{x:Bind Food.Name, Mode=OneWay}" 
-                IconSource="{x:Bind Food.IconPath, Mode=OneWay}" 
+                IconSource="{x:Bind IconSource, Mode=OneWay}" 
                 Count="{x:Bind Count, Mode=TwoWay}" 
                 RecommendedAmount="{x:Bind RecommendedAmount, Mode=OneWay}" 
                 Streak="{x:Bind Streak, Mode=OneWay}" 
@@ -27,7 +27,7 @@
         <DataTemplate x:Key="TweakServingsTemplate" x:DataType="viewmodels:TweakServingsViewModel">
             <controls:ServingsControl 
                 Title="{x:Bind Tweak.Name, Mode=OneWay}" 
-                IconSource="{x:Bind Tweak.IconPath, Mode=OneWay}" 
+                IconSource="{x:Bind IconSource, Mode=OneWay}" 
                 Count="{x:Bind Count, Mode=TwoWay}" 
                 RecommendedAmount="{x:Bind RecommendedAmount, Mode=OneWay}" 
                 Streak="{x:Bind Streak, Mode=OneWay}" 

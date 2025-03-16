@@ -1,23 +1,16 @@
 using Microsoft.UI;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Storage;
 
 namespace DailyDozen.Shared.Helpers
 {
     public static class IconHelper
     {
         private static readonly Dictionary<string, string> PlaceholderCache = new Dictionary<string, string>();
-        private static readonly Random Random = new Random();
         
         public static readonly Dictionary<string, Windows.UI.Color> CategoryColors = new Dictionary<string, Windows.UI.Color>
         {
+            // Foods
             { "beans", Colors.Brown },
             { "berries", Colors.Purple },
             { "other_fruits", Colors.Orange },
@@ -31,6 +24,7 @@ namespace DailyDozen.Shared.Helpers
             { "beverages", Colors.Blue },
             { "exercise", Colors.Red },
             { "vitamin_b12", Colors.Pink },
+            
             // Tweaks
             { "front_load_calories", Colors.IndianRed },
             { "negative_calorie_preloading", Colors.LightCoral },
@@ -55,36 +49,20 @@ namespace DailyDozen.Shared.Helpers
             { "negative_calorie_exercising", Colors.DarkSlateGray }
         };
 
-        public static async Task<string> GetOrCreatePlaceholderIcon(string idName, string name, bool isTweak = false)
+        // Until we have proper icons, we'll use a generic system icon
+        public static string GetIconPath(string idName, bool isTweak = false)
         {
             if (PlaceholderCache.TryGetValue(idName, out string cachedPath))
             {
                 return cachedPath;
             }
-
-            var folderName = isTweak ? "Tweaks" : "Foods";
-            var localFolder = ApplicationData.Current.LocalFolder;
-            var iconFolder = await localFolder.CreateFolderAsync(folderName, CreationCollisionOption.OpenIfExists);
-
-            var filePath = Path.Combine(iconFolder.Path, $"{idName}.png");
-            if (File.Exists(filePath))
-            {
-                PlaceholderCache[idName] = filePath;
-                return filePath;
-            }
             
-            // Use the first letter of the name for the placeholder
-            var firstLetter = !string.IsNullOrEmpty(name) ? name[0].ToString().ToUpper() : "?";
+            // Use a system icon that's guaranteed to be available
+            // This avoids issues with missing files while testing
+            var path = "ms-appx:///Assets/Icons/StoreLogo.png";
             
-            // Pick a color based on the idName or a default color
-            var color = CategoryColors.TryGetValue(idName, out var specificColor) 
-                ? specificColor 
-                : Colors.Gray;
-
-            // Generate placeholder icon (This will be platform-specific)
-            // For now, we'll return a placeholder path
-            PlaceholderCache[idName] = $"ms-appx:///Assets/{folderName}/placeholder.png";
-            return PlaceholderCache[idName];
+            PlaceholderCache[idName] = path;
+            return path;
         }
     }
 }
