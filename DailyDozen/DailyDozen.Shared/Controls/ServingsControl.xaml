@@ -1,0 +1,72 @@
+<UserControl
+    x:Class="DailyDozen.Shared.Controls.ServingsControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DailyDozen.Shared.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="100"
+    d:DesignWidth="400">
+
+    <Grid Margin="10" ColumnSpacing="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Image x:Name="ItemIcon" 
+               Grid.Column="0" 
+               Width="50" 
+               Height="50"
+               Source="{x:Bind IconSource, Mode=OneWay}" />
+
+        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+            <TextBlock x:Name="ItemName" 
+                      Text="{x:Bind Title, Mode=OneWay}" 
+                      FontWeight="SemiBold"
+                      FontSize="16" />
+            
+            <StackPanel Orientation="Horizontal" Spacing="5" Visibility="{x:Bind ShowStreak, Mode=OneWay}">
+                <TextBlock Text="Current streak:" />
+                <TextBlock Text="{x:Bind Streak, Mode=OneWay}" FontWeight="Bold" />
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" 
+                  Orientation="Horizontal" 
+                  VerticalAlignment="Center" 
+                  Spacing="10">
+                  
+            <Button x:Name="MinusButton"
+                   Content="-"
+                   Width="40"
+                   Height="40"
+                   FontWeight="Bold"
+                   Click="MinusButton_Click"/>
+            
+            <TextBlock x:Name="CountText" 
+                     Text="{x:Bind Count, Mode=OneWay}" 
+                     VerticalAlignment="Center"
+                     FontSize="18"
+                     FontWeight="SemiBold" />
+            
+            <TextBlock Text="/" 
+                     VerticalAlignment="Center"
+                     FontSize="18" />
+            
+            <TextBlock x:Name="RecommendedText" 
+                     Text="{x:Bind RecommendedAmount, Mode=OneWay}" 
+                     VerticalAlignment="Center"
+                     FontSize="18" />
+            
+            <Button x:Name="PlusButton"
+                   Content="+"
+                   Width="40"
+                   Height="40"
+                   FontWeight="Bold"
+                   Click="PlusButton_Click"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

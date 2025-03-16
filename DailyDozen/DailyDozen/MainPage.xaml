@@ -1,0 +1,167 @@
+﻿<Page
+    x:Class="DailyDozen.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DailyDozen"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:DailyDozen.Shared.Controls"
+    xmlns:viewmodels="using:DailyDozen.Shared.ViewModels"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <!-- Data template for food servings -->
+        <DataTemplate x:Key="FoodServingsTemplate" x:DataType="viewmodels:ServingsViewModel">
+            <controls:ServingsControl 
+                Title="{x:Bind Food.Name, Mode=OneWay}" 
+                IconSource="{x:Bind Food.IconPath, Mode=OneWay}" 
+                Count="{x:Bind Count, Mode=TwoWay}" 
+                RecommendedAmount="{x:Bind RecommendedAmount, Mode=OneWay}" 
+                Streak="{x:Bind Streak, Mode=OneWay}" 
+                IncrementCommand="{x:Bind IncrementCountCommand}" 
+                DecrementCommand="{x:Bind DecrementCountCommand}" />
+        </DataTemplate>
+
+        <!-- Data template for tweak servings -->
+        <DataTemplate x:Key="TweakServingsTemplate" x:DataType="viewmodels:TweakServingsViewModel">
+            <controls:ServingsControl 
+                Title="{x:Bind Tweak.Name, Mode=OneWay}" 
+                IconSource="{x:Bind Tweak.IconPath, Mode=OneWay}" 
+                Count="{x:Bind Count, Mode=TwoWay}" 
+                RecommendedAmount="{x:Bind RecommendedAmount, Mode=OneWay}" 
+                Streak="{x:Bind Streak, Mode=OneWay}" 
+                IncrementCommand="{x:Bind IncrementCountCommand}" 
+                DecrementCommand="{x:Bind DecrementCountCommand}" />
+        </DataTemplate>
+    </Page.Resources>
+
+    <Page.DataContext>
+        <viewmodels:MainViewModel x:Name="ViewModel" />
+    </Page.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Background="{ThemeResource SystemAccentColor}" Padding="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" 
+                    Command="{x:Bind ViewModel.GoToPreviousDayCommand}" 
+                    Content="&lt;" 
+                    FontSize="20"
+                    Width="50"
+                    Height="50"
+                    Background="Transparent"
+                    Foreground="White"/>
+
+            <StackPanel Grid.Column="1" 
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Center">
+                <TextBlock Text="{x:Bind ViewModel.SelectedDay.GetFormattedDate(), Mode=OneWay}" 
+                           FontSize="24" 
+                           Foreground="White"
+                           HorizontalAlignment="Center" />
+                
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Center" 
+                            Spacing="5"
+                            Visibility="{x:Bind ViewModel.IsDailyDozenMode, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="Daily Dozen:" 
+                               Foreground="White"
+                               FontSize="18" />
+                    <TextBlock Text="{x:Bind ViewModel.TotalFoodServings, Mode=OneWay}" 
+                               Foreground="White"
+                               FontWeight="Bold"
+                               FontSize="18" />
+                    <TextBlock Text="of 24" 
+                               Foreground="White"
+                               FontSize="18" />
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Center" 
+                            Spacing="5"
+                            Visibility="{x:Bind ViewModel.IsDailyDozenMode, Mode=OneWay, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
+                    <TextBlock Text="21 Tweaks:" 
+                               Foreground="White"
+                               FontSize="18" />
+                    <TextBlock Text="{x:Bind ViewModel.TotalTweakServings, Mode=OneWay}" 
+                               Foreground="White"
+                               FontWeight="Bold"
+                               FontSize="18" />
+                    <TextBlock Text="of 37" 
+                               Foreground="White"
+                               FontSize="18" />
+                </StackPanel>
+            </StackPanel>
+
+            <Button Grid.Column="2" 
+                    Command="{x:Bind ViewModel.GoToNextDayCommand}" 
+                    Content="&gt;" 
+                    FontSize="20"
+                    Width="50"
+                    Height="50"
+                    Background="Transparent"
+                    Foreground="White"/>
+        </Grid>
+
+        <!-- Content Area -->
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Mode Toggle & Back to Today button -->
+            <Grid Grid.Row="0" Padding="16" Background="#FAFAFA">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0"
+                        Command="{x:Bind ViewModel.ToggleModeCommand}"
+                        Content="{x:Bind ViewModel.IsDailyDozenMode, Mode=OneWay, Converter={StaticResource BoolToModeTextConverter}}"
+                        HorizontalAlignment="Left"
+                        Padding="12,8"
+                        Background="{ThemeResource SystemAccentColor}"
+                        Foreground="White" />
+
+                <Button Grid.Column="1"
+                        x:Name="BackToTodayButton"
+                        Content="Back to Today"
+                        Command="{x:Bind ViewModel.GoToTodayCommand}"
+                        Visibility="{x:Bind ViewModel.SelectedDay.IsToday(), Mode=OneWay, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"
+                        HorizontalAlignment="Right"
+                        Padding="12,8" />
+            </Grid>
+
+            <!-- Food Servings List -->
+            <ScrollViewer Grid.Row="1" 
+                         Visibility="{x:Bind ViewModel.IsDailyDozenMode, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ItemsRepeater x:Name="FoodServingsRepeater"
+                              ItemsSource="{x:Bind ViewModel.FoodServings, Mode=OneWay}"
+                              ItemTemplate="{StaticResource FoodServingsTemplate}">
+                </ItemsRepeater>
+            </ScrollViewer>
+            
+            <!-- Tweak Servings List -->
+            <ScrollViewer Grid.Row="1" 
+                         Visibility="{x:Bind ViewModel.IsDailyDozenMode, Mode=OneWay, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
+                <ItemsRepeater x:Name="TweakServingsRepeater"
+                              ItemsSource="{x:Bind ViewModel.TweakServings, Mode=OneWay}"
+                              ItemTemplate="{StaticResource TweakServingsTemplate}">
+                </ItemsRepeater>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Page>
